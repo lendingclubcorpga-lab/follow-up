@@ -31,6 +31,16 @@ def init_supabase() -> Client:
         st.error(f"Supabase URL looks wrong: {url!r}. It should look like https://<project-ref>.supabase.co")
         st.stop()
 
+    host = url.split("//", 1)[1].split("/", 1)[0].lower()
+    if host in ("supabase.com", "www.supabase.com", "app.supabase.com") or "/dashboard" in url:
+        st.error(
+            f"The URL in your secrets points to the Supabase website/dashboard ({url!r}), "
+            "not to your project's API. In the Supabase dashboard open your project -> "
+            "Project Settings -> API (or Data API) and copy the 'Project URL'. "
+            "It looks like https://<project-ref>.supabase.co"
+        )
+        st.stop()
+
     return create_client(url, key)
 
 
